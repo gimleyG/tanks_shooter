@@ -1,0 +1,20 @@
+# Ignore all exept directories
+*
+!**/
+
+# Do not ignore the following:
+
+# This file
+!.gitignore
+
+# Plain text files
+!**.txt
+
+# Markdown files
+!**.md
+
+# C/C++ headers:
+!**.h
+
+# C++ sources:
+!**.cpp
