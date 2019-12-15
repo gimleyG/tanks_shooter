@@ -18,3 +18,5 @@
 
 # C++ sources:
 !**.cpp
+
+out
