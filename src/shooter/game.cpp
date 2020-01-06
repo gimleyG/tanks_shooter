@@ -58,11 +58,14 @@ void Game::showSplashScreen() {
   sf::Event event;
   while (true) {
     while (m_mainWindow.pollEvent(event)) {
-      if (event.type == sf::Event::EventType::KeyPressed ||
-          event.type == sf::Event::EventType::MouseButtonPressed ||
-          event.type == sf::Event::EventType::Closed) {
-        m_state = State::ShowingMenu;
-        return;
+      switch (event.type) {
+        case sf::Event::EventType::KeyPressed:
+        case sf::Event::EventType::MouseButtonPressed:
+          m_state = State::ShowingMenu;
+          return;
+        case sf::Event::Closed:
+          m_state = State::Exiting;
+          return;
       }
     }
   }
@@ -76,16 +79,16 @@ void Game::showMenu() {
   sf::Event menuEvent;
   while (true) {
     while (m_mainWindow.pollEvent(menuEvent)) {
-      if (menuEvent.type == sf::Event::KeyPressed) {
-        if (menuEvent.key.code == sf::Keyboard::Return) {
-          m_state = State::ShowingSplash;
+      switch (menuEvent.type) {
+        case sf::Event::KeyPressed:
+          if (menuEvent.key.code == sf::Keyboard::Return) {
+            m_state = State::ShowingSplash;
+            return;
+          }
+          break;
+        case sf::Event::Closed:
+          m_state = State::Exiting;
           return;
-        }
-      }
-
-      if (menuEvent.type == sf::Event::Closed) {
-        m_state = State::Exiting;
-        return;
       }
     }
   }
