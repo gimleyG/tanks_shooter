@@ -2,10 +2,9 @@
 
 #include "shooter/game.h"
 
-int main()
-{
-    shooter::Game game;
-    game.start();
+int main() {
+  Shooter::Game game;
+  game.start();
 
-    return 0;
+  return 0;
 }

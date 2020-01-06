@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
+set(CMAKE_CXX_STANDARD 17)
+
 set(SHOOTER_LIB ${PROJECT_NAME}-core)
 add_subdirectory(shooter)
 
