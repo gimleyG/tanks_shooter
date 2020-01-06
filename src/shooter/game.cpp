@@ -2,6 +2,7 @@
 
 #include <SFML/Window/Event.hpp>
 
+#include "menu/item_pointer.h"
 #include "menu/main.h"
 #include "menu/splash_screen.h"
 
@@ -73,7 +74,11 @@ void Game::showSplashScreen() {
 
 void Game::showMenu() {
   Menu::Main mainMenu;
+  Menu::ItemPointer menuItemPointer;
+  menuItemPointer.setUp(mainMenu.getItems().begin(), mainMenu.getItems().end());
+
   m_mainWindow.draw(mainMenu);
+  m_mainWindow.draw(menuItemPointer);
   m_mainWindow.display();
 
   sf::Event menuEvent;
@@ -81,9 +86,26 @@ void Game::showMenu() {
     while (m_mainWindow.pollEvent(menuEvent)) {
       switch (menuEvent.type) {
         case sf::Event::KeyPressed:
-          if (menuEvent.key.code == sf::Keyboard::Return) {
-            m_state = State::ShowingSplash;
-            return;
+          switch (menuEvent.key.code) {
+            case sf::Keyboard::Return:
+              switch (menuItemPointer.getCurrent()->action) {
+                case Menu::Action::Play:
+                case Menu::Action::Exit:
+                  m_state = State::ShowingSplash;
+              }
+              return;
+            case sf::Keyboard::Up:
+              menuItemPointer.prev();
+              m_mainWindow.draw(mainMenu);
+              m_mainWindow.draw(menuItemPointer);
+              m_mainWindow.display();
+              break;
+            case sf::Keyboard::Down:
+              menuItemPointer.next();
+              m_mainWindow.draw(mainMenu);
+              m_mainWindow.draw(menuItemPointer);
+              m_mainWindow.display();
+              break;
           }
           break;
         case sf::Event::Closed:

@@ -14,18 +14,20 @@ Main::Main() {
 
   m_sprite = std::make_unique<sf::Sprite>(*m_texture);
 
-  MenuItem playButton;
+  Item playButton;
   playButton.rect = sf::Rect<int>(183, 243, 131, 56);
-  playButton.action = MenuResult::Play;
+  playButton.action = Action::Play;
   m_menuItems.push_back(playButton);
 
-  MenuItem exitButton;
+  Item exitButton;
   exitButton.rect = sf::Rect<int>(189, 331, 109, 57);
-  exitButton.action = MenuResult::Exit;
+  exitButton.action = Action::Exit;
   m_menuItems.push_back(exitButton);
 }
 
 Main::~Main() = default;
+
+const std::list<Item>& Main::getItems() const { return m_menuItems; }
 
 void Main::draw(sf::RenderTarget& target, sf::RenderStates states) const {
   target.draw(*m_sprite, states);

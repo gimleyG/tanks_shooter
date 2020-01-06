@@ -8,6 +8,8 @@ set(SOURCES
     menu/splash_screen.cpp
     menu/main.h
     menu/main.cpp
+    menu/item_pointer.h
+    menu/item_pointer.cpp
 )
 
 find_library(SFML_WINDOW NAMES sfml-window-d PATHS ${SFML_PREBUILD_PATH}/lib)
