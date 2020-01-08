@@ -6,7 +6,13 @@ namespace Shooter {
 
 class Game final {
  public:
-  enum class State { Uninitialized = 0, ShowingSplash, ShowingMenu, Exiting };
+  enum class State {
+    Uninitialized = 0,
+    ShowingSplash,
+    ShowingMenu,
+    Playing,
+    Exiting
+  };
 
  public:
   Game();
@@ -17,6 +23,7 @@ class Game final {
   void playLoop();
   void showSplashScreen();
   void showMenu();
+  void renderGame();
 
  private:
   sf::RenderWindow m_mainWindow;

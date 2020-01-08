@@ -42,6 +42,9 @@ void Game::start() {
 
 void Game::playLoop() {
   switch (m_state) {
+    case State::Playing:
+      renderGame();
+      break;
     case State::ShowingMenu:
       showMenu();
       break;
@@ -77,9 +80,13 @@ void Game::showMenu() {
   Menu::ItemPointer menuItemPointer;
   menuItemPointer.setUp(mainMenu.getItems().begin(), mainMenu.getItems().end());
 
-  m_mainWindow.draw(mainMenu);
-  m_mainWindow.draw(menuItemPointer);
-  m_mainWindow.display();
+  auto updateMenu = [this, &mainMenu, &menuItemPointer]() {
+    m_mainWindow.draw(mainMenu);
+    m_mainWindow.draw(menuItemPointer);
+    m_mainWindow.display();
+  };
+
+  updateMenu();
 
   sf::Event menuEvent;
   while (true) {
@@ -90,21 +97,20 @@ void Game::showMenu() {
             case sf::Keyboard::Return:
               switch (menuItemPointer.getCurrent()->action) {
                 case Menu::Action::Play:
+                  m_state = State::Playing;
+                  break;
                 case Menu::Action::Exit:
-                  m_state = State::ShowingSplash;
+                  m_state = State::Exiting;
+                  break;
               }
               return;
             case sf::Keyboard::Up:
               menuItemPointer.prev();
-              m_mainWindow.draw(mainMenu);
-              m_mainWindow.draw(menuItemPointer);
-              m_mainWindow.display();
+              updateMenu();
               break;
             case sf::Keyboard::Down:
               menuItemPointer.next();
-              m_mainWindow.draw(mainMenu);
-              m_mainWindow.draw(menuItemPointer);
-              m_mainWindow.display();
+              updateMenu();
               break;
           }
           break;
@@ -114,6 +120,24 @@ void Game::showMenu() {
       }
     }
   }
+}
+
+void Game::renderGame() {
+  sf::Event currentEvent;
+  m_mainWindow.pollEvent(currentEvent);
+
+  if (currentEvent.type == sf::Event::KeyPressed &&
+      currentEvent.key.code == sf::Keyboard::Escape) {
+    m_state = State::ShowingMenu;
+    showMenu();
+    return;
+  } else if (currentEvent.type == sf::Event::Closed) {
+    m_state = State::Exiting;
+    return;
+  }
+
+  m_mainWindow.clear(CLEAR_COLOR);
+  m_mainWindow.display();
 }
 
 }  // namespace Shooter
