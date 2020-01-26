@@ -16,6 +16,8 @@ set(SOURCES
     game_objects/tank.cpp
     game_objects/wall.h
     game_objects/wall.cpp
+    game_objects/battleground.h
+    game_objects/battleground.cpp
 )
 
 find_library(SFML_WINDOW NAMES sfml-window-d PATHS ${SFML_PREBUILD_PATH}/lib)
