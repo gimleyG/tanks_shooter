@@ -10,6 +10,12 @@ set(SOURCES
     menu/main.cpp
     menu/item_pointer.h
     menu/item_pointer.cpp
+
+    game_objects/object.h
+    game_objects/tank.h
+    game_objects/tank.cpp
+    game_objects/wall.h
+    game_objects/wall.cpp
 )
 
 find_library(SFML_WINDOW NAMES sfml-window-d PATHS ${SFML_PREBUILD_PATH}/lib)
