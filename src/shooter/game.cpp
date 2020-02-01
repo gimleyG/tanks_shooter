@@ -2,6 +2,8 @@
 
 #include <SFML/Window/Event.hpp>
 
+#include "game_objects/battleground.h"
+#include "game_objects/object.h"
 #include "menu/item_pointer.h"
 #include "menu/main.h"
 #include "menu/splash_screen.h"
@@ -13,8 +15,17 @@ constexpr int SCREEN_WIDTH = 512;
 constexpr int SCREEN_HEIGHT = 650;
 
 constexpr int DEFAULT_BITS_PER_PIXEL = 32;
+constexpr int FPS = 60;
 
 const sf::Color CLEAR_COLOR = sf::Color(0, 0, 0);
+
+#define BEGIN_EVENT_LOOP_SECTION(window, event) \
+  while (true) {                                \
+    while (window.pollEvent(event)) {
+#define END_EVENT_LOOP_SECTION \
+  }                            \
+  }
+
 }  // namespace
 
 Game::Game() : m_state{State::Uninitialized} {}
@@ -27,6 +38,7 @@ void Game::start() {
   m_mainWindow.create(
       sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, DEFAULT_BITS_PER_PIXEL),
       "The Shooter");
+  m_mainWindow.setFramerateLimit(FPS);
 
   m_state = State::ShowingSplash;
 
@@ -60,19 +72,19 @@ void Game::showSplashScreen() {
   m_mainWindow.display();
 
   sf::Event event;
-  while (true) {
-    while (m_mainWindow.pollEvent(event)) {
-      switch (event.type) {
-        case sf::Event::EventType::KeyPressed:
-        case sf::Event::EventType::MouseButtonPressed:
-          m_state = State::ShowingMenu;
-          return;
-        case sf::Event::Closed:
-          m_state = State::Exiting;
-          return;
-      }
-    }
+  BEGIN_EVENT_LOOP_SECTION(m_mainWindow, event)
+
+  switch (event.type) {
+    case sf::Event::EventType::KeyPressed:
+    case sf::Event::EventType::MouseButtonPressed:
+      m_state = State::ShowingMenu;
+      return;
+    case sf::Event::Closed:
+      m_state = State::Exiting;
+      return;
   }
+
+  END_EVENT_LOOP_SECTION
 }
 
 void Game::showMenu() {
@@ -88,56 +100,67 @@ void Game::showMenu() {
 
   updateMenu();
 
-  sf::Event menuEvent;
-  while (true) {
-    while (m_mainWindow.pollEvent(menuEvent)) {
-      switch (menuEvent.type) {
-        case sf::Event::KeyPressed:
-          switch (menuEvent.key.code) {
-            case sf::Keyboard::Return:
-              switch (menuItemPointer.getCurrent()->action) {
-                case Menu::Action::Play:
-                  m_state = State::Playing;
-                  break;
-                case Menu::Action::Exit:
-                  m_state = State::Exiting;
-                  break;
-              }
-              return;
-            case sf::Keyboard::Up:
-              menuItemPointer.prev();
-              updateMenu();
+  sf::Event event;
+  BEGIN_EVENT_LOOP_SECTION(m_mainWindow, event)
+
+  switch (event.type) {
+    case sf::Event::KeyPressed:
+      switch (event.key.code) {
+        case sf::Keyboard::Return:
+          switch (menuItemPointer.getCurrent()->action) {
+            case Menu::Action::Play:
+              m_state = State::Playing;
               break;
-            case sf::Keyboard::Down:
-              menuItemPointer.next();
-              updateMenu();
+            case Menu::Action::Exit:
+              m_state = State::Exiting;
               break;
           }
-          break;
-        case sf::Event::Closed:
-          m_state = State::Exiting;
           return;
+        case sf::Keyboard::Up:
+          menuItemPointer.prev();
+          updateMenu();
+          break;
+        case sf::Keyboard::Down:
+          menuItemPointer.next();
+          updateMenu();
+          break;
       }
-    }
+      break;
+    case sf::Event::Closed:
+      m_state = State::Exiting;
+      return;
   }
+
+  END_EVENT_LOOP_SECTION
 }
 
 void Game::renderGame() {
-  sf::Event currentEvent;
-  m_mainWindow.pollEvent(currentEvent);
+  GameObjects::BattleGround battleGround(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  if (currentEvent.type == sf::Event::KeyPressed &&
-      currentEvent.key.code == sf::Keyboard::Escape) {
+  auto updateGame = [this, &battleGround]() {
+    m_mainWindow.clear(CLEAR_COLOR);
+    m_mainWindow.draw(battleGround);
+    m_mainWindow.display();
+  };
+
+  updateGame();
+
+  sf::Event event;
+  BEGIN_EVENT_LOOP_SECTION(m_mainWindow, event)
+
+  if (event.type == sf::Event::KeyPressed &&
+      event.key.code == sf::Keyboard::Escape) {
     m_state = State::ShowingMenu;
     showMenu();
     return;
-  } else if (currentEvent.type == sf::Event::Closed) {
+  } else if (event.type == sf::Event::Closed) {
     m_state = State::Exiting;
     return;
   }
 
-  m_mainWindow.clear(CLEAR_COLOR);
-  m_mainWindow.display();
+  updateGame();
+
+  END_EVENT_LOOP_SECTION
 }
 
 }  // namespace Shooter
