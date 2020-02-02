@@ -18,6 +18,10 @@ set(SOURCES
     game_objects/wall.cpp
     game_objects/battleground.h
     game_objects/battleground.cpp
+
+    game_map/map.h
+    game_map/parser.h
+    game_map/parser.cpp
 )
 
 find_library(SFML_WINDOW NAMES sfml-window-d PATHS ${SFML_PREBUILD_PATH}/lib)
