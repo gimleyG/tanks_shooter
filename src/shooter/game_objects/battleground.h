@@ -4,6 +4,7 @@
 #include <SFML/System/Clock.hpp>
 #include <map>
 
+#include "game_map/map.h"
 #include "game_objects/object.h"
 
 namespace Shooter::GameObjects {
@@ -18,6 +19,7 @@ class BattleGround : public sf::Drawable {
   void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
  public:
+  void loadMap(const GameMap::Map& map);
   void registerObject(GameObjects::Object::UPtr object);
 
  private:

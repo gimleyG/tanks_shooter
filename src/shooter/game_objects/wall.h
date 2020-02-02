@@ -9,7 +9,7 @@ namespace Shooter::GameObjects {
 
 class Wall : public Object {
  public:
-  Wall(sf::Vector2f& size, sf::Vector2f& position);
+  Wall(const sf::Vector2f& size, const sf::Vector2f& position);
   ~Wall() override = default;
 
   // Object

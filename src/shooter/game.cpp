@@ -2,6 +2,7 @@
 
 #include <SFML/Window/Event.hpp>
 
+#include "game_map/parser.h"
 #include "game_objects/battleground.h"
 #include "game_objects/object.h"
 #include "menu/item_pointer.h"
@@ -135,7 +136,11 @@ void Game::showMenu() {
 }
 
 void Game::renderGame() {
+  GameMap::Map map;
+  GameMap::Parser("map.mp") >> map;
+
   GameObjects::BattleGround battleGround(SCREEN_WIDTH, SCREEN_HEIGHT);
+  battleGround.loadMap(map);
 
   auto updateGame = [this, &battleGround]() {
     m_mainWindow.clear(CLEAR_COLOR);

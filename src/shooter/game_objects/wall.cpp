@@ -2,7 +2,8 @@
 
 namespace Shooter::GameObjects {
 
-Wall::Wall(sf::Vector2f& size, sf::Vector2f& position) : m_shape(size) {
+Wall::Wall(const sf::Vector2f& size, const sf::Vector2f& position)
+    : m_shape(size) {
   static auto color = sf::Color(250, 150, 0);
 
   m_shape.setPosition(position);

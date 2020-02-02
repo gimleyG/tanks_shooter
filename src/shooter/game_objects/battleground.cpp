@@ -1,5 +1,9 @@
 #include "game_objects/battleground.h"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
+#include "game_objects/wall.h"
+
 namespace Shooter::GameObjects {
 
 namespace {
@@ -49,7 +53,21 @@ BattleGround::BattleGround(uint32_t width, uint32_t height)
 BattleGround::~BattleGround() = default;
 
 void BattleGround::draw(sf::RenderTarget& target,
-                        sf::RenderStates states) const {}
+                        sf::RenderStates states) const {
+  // draw map
+  for (auto& [id, objectPtr] : m_gameObjects) {
+    if (objectPtr->getType() != Object::Type::WALL) {
+      continue;
+    }
+    target.draw(*objectPtr, states);
+  }
+}
+
+void BattleGround::loadMap(const GameMap::Map& map) {
+  for (const auto& wall : map.walls) {
+    registerObject(std::make_unique<Wall>(wall.size, wall.position));
+  }
+}
 
 void BattleGround::registerObject(GameObjects::Object::UPtr object) {
   auto id = INDEXER.getVacantId();
