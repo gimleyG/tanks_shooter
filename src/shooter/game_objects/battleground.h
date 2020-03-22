@@ -1,9 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/System/Clock.hpp>
-#include <map>
-
 #include "game_map/map.h"
 #include "game_objects/object.h"
 

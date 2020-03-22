@@ -1,8 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <memory>
-
 #include "menu/item.h"
 
 namespace sf {

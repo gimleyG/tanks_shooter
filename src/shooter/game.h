@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/RenderWindow.hpp>
-
 namespace Shooter {
 
 class Game final {
@@ -16,18 +14,13 @@ class Game final {
 
  public:
   Game();
+  ~Game();
 
   void start();
 
  private:
-  void playLoop();
-  void showSplashScreen();
-  void showMenu();
-  void renderGame();
-
- private:
-  sf::RenderWindow m_mainWindow;
-  State m_state;
+  class Implementation;
+  std::unique_ptr<Implementation> m_impl;
 };
 
 }  // namespace Shooter

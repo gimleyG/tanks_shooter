@@ -1,8 +1,5 @@
 #pragma once
 
-#include <SFML/System/Vector2.hpp>
-#include <vector>
-
 namespace Shooter::GameMap {
 
 struct Wall {

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <memory>
-
 namespace sf {
 
 class Sprite;

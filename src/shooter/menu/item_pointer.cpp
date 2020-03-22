@@ -1,9 +1,5 @@
 #include "menu/item_pointer.h"
 
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-
 namespace Shooter::Menu {
 
 ItemPointer::ItemPointer() {

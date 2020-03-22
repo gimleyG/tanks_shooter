@@ -1,8 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/Rect.hpp>
-#include <list>
-
 namespace Shooter::Menu {
 
 enum class Action { Nothing = 0, Exit, Play };

@@ -4,10 +4,12 @@
 
 namespace Shooter::GameObjects {
 
-class Wall : public Object {
+class Tank;
+
+class TankController : public Object {
  public:
-  Wall(const sf::Vector2f& size, const sf::Vector2f& position);
-  ~Wall() override = default;
+  explicit TankController(std::unique_ptr<Tank> tank);
+  ~TankController() override;
 
   // Object
  public:
@@ -16,7 +18,7 @@ class Wall : public Object {
   Object::Type getType() const override;
 
  private:
-  sf::RectangleShape m_shape;
+  std::unique_ptr<Tank> m_controlledTank;
 };
 
 }  // namespace Shooter::GameObjects

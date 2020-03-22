@@ -1,9 +1,5 @@
 #include "menu/main.h"
 
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
-
 namespace Shooter::Menu {
 
 Main::Main() {

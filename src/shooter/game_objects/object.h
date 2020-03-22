@@ -1,9 +1,5 @@
 #pragma once
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <memory>
-#include <optional>
-
 namespace Shooter::GameObjects {
 
 class Object : public sf::Drawable {

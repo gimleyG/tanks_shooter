@@ -1,12 +1,13 @@
 #pragma once
 
-#include <SFML/Graphics/RenderTarget.hpp>
-
 #include "game_objects/object.h"
 
 namespace Shooter::GameObjects {
 
 class Tank : public Object {
+ public:
+  using UPtr = std::unique_ptr<Tank>;
+
  public:
   ~Tank() override = default;
 

@@ -1,7 +1,5 @@
 #include "game_objects/battleground.h"
 
-#include <SFML/Graphics/RenderTarget.hpp>
-
 #include "game_objects/wall.h"
 
 namespace Shooter::GameObjects {

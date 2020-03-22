@@ -1,8 +1,5 @@
 #pragma once
 
-#include <filesystem>
-#include <fstream>
-
 #include "game_map/map.h"
 
 namespace Shooter::GameMap {

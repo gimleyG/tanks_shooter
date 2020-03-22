@@ -1,9 +1,5 @@
 #include "game_map/parser.h"
 
-#include <algorithm>
-#include <array>
-#include <sstream>
-
 namespace Shooter::GameMap {
 
 Parser::Parser(const std::filesystem::path& path) {
