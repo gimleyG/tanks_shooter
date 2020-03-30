@@ -20,26 +20,20 @@ Parser::~Parser() {
 }
 
 namespace {
-constexpr auto SPACE_CHARS = " \n\r\t\v";
+constexpr auto SPACE_CHARS = " \n\r\t\v\f";
 
 constexpr auto WALL_STR = "WALL";
 constexpr auto WALL_STR_SIZE = 4;
 constexpr auto MAX_SIZE_OF_WALL_DESCRIPTION = 5;
 
-const std::array<char, 4> SPACE_SYMBOLS = {'\n', '\t', '\v', '\r'};
-
 void normalize(std::string& str) {
   std::replace_if(
-      str.begin(), str.end(),
-      [](char ch) {
-        return std::find(SPACE_SYMBOLS.begin(), SPACE_SYMBOLS.end(), ch) !=
-               SPACE_SYMBOLS.end();
-      },
+      str.begin(), str.end(), [](const char& ch) { return std::isspace(ch); },
       ' ');
 
   str.erase(std::unique(str.begin(), str.end(),
                         [](const char one, const char two) {
-                          return one == ' ' && two == ' ' && one == two;
+                          return one == ' ' && two == ' ';
                         }),
             str.end());
 }
@@ -51,8 +45,12 @@ Parser& Parser::operator>>(Map& map) {
   while (std::getline(m_file, line, ';')) {
     std::string_view lineView = line;
 
-    lineView = lineView.substr(lineView.find_first_not_of(SPACE_CHARS),
-                               lineView.find_last_not_of(SPACE_CHARS) + 1);
+    const auto start = lineView.find_first_not_of(SPACE_CHARS);
+    if (start == std::string::npos) {
+      continue;
+    }
+    lineView =
+        lineView.substr(start, lineView.find_last_not_of(SPACE_CHARS) + 1);
 
     if (lineView.compare(0, WALL_STR_SIZE, WALL_STR) != 0) {
       continue;
