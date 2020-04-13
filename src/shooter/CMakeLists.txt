@@ -4,6 +4,10 @@ set(SOURCES
     game.h
     game.cpp
 
+    actions/action.h
+    actions/registrator.h
+    actions/action_data.h
+
     menu/item.h
     menu/splash_screen.h
     menu/splash_screen.cpp
@@ -13,6 +17,7 @@ set(SOURCES
     menu/item_pointer.cpp
 
     game_objects/object.h
+    game_objects/updatable.h
     game_objects/tank.h
     game_objects/tank.cpp
     game_objects/tank_controller.h
