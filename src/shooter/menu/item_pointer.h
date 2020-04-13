@@ -2,13 +2,6 @@
 
 #include "menu/item.h"
 
-namespace sf {
-
-class Sprite;
-class Texture;
-
-}  // namespace sf
-
 namespace Shooter::Menu {
 
 using ItemListIter = ItemList::const_iterator;

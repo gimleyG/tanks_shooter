@@ -1,21 +1,32 @@
 #pragma once
 
-#include "game_objects/object.h"
-
 namespace Shooter::GameObjects {
 
-class Tank : public Object {
+class Tank : public sf::Drawable {
  public:
   using UPtr = std::unique_ptr<Tank>;
 
+  struct State {
+    sf::Vector2f position;
+    float angle;
+  };
+
  public:
+  Tank();
   ~Tank() override = default;
 
-  // Object
+  // sf::Drawable
  public:
   void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-  Object::Type getType() const override;
+  const State& getState() const;
+
+  void setState(const State&);
+
+ private:
+  State m_state;
+  std::unique_ptr<sf::Texture> m_texture;
+  std::unique_ptr<sf::Sprite> m_sprite;
 };
 
 }  // namespace Shooter::GameObjects
