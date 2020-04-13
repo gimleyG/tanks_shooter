@@ -93,4 +93,63 @@ void BattleGround::unregisterGameObject(Object::Id id) {
   INDEXER.freeId(id);
 }
 
+namespace {
+
+using ActionHandlers = std::unordered_map<
+    Actions::Action::Type,
+    std::function<void(const GameObjects::Updatable& object,
+                       const Actions::ActionData& actionData)>>;
+const ActionHandlers HANDLERS = {
+    {Actions::Action::Type::MOVE,
+     [](const GameObjects::Updatable& object,
+        const Actions::ActionData& actionData) {
+       if (GameObjects::Object::Type::BULLET == object.getType()) {
+         std::cout << "[Info] A bullet moves" << std::endl;
+         // 1. If the bullet gets out of the screen - it removes
+         // 2. If the bullet hits a map object - it removes
+         // 3. If the bullet hits a player - it removes, the player dies
+       } else {
+         std::cout << "[Info] An object moves: "
+                   << "id " << object.getId().value() << "; position "
+                   << actionData.position.x << ":" << actionData.position.y
+                   << "; angle " << actionData.angle << std::endl;
+         // 1. Check that the object remain inside the view
+         // 2. Check that the object is not inside the map objects
+         // 3. Doesn't intersect with other players
+       }
+     }},
+    {Actions::Action::Type::SHOOT, [](const GameObjects::Updatable& object,
+                                      const Actions::ActionData& actionData) {
+       // Create a bullet
+       std::cout << "[Info] A bullet created"
+                 << "position " << actionData.position.x << ":"
+                 << actionData.position.y << "; angle " << actionData.angle
+                 << "\n";
+     }}};
+
+}  // namespace
+
+void BattleGround::registerAction(const Actions::Action& action) {
+  using ActionType = Actions::Action::Type;
+
+  if (action.type != ActionType::MOVE && action.type != ActionType::SHOOT) {
+    // TODO: Print warn message to log
+    std::cout << "[Warn] Unexpected action type. The sender is "
+              << action.senderId << "\n";
+    return;
+  }
+
+  const auto objId = action.senderId;
+
+  auto it = m_gameObjects.find(objId);
+  if (it == m_gameObjects.end()) {
+    // TODO: Print warn message to log
+    std::cout << "[Warn] The object is unknown. Skip."
+              << "\n";
+    return;
+  }
+
+  HANDLERS.at(action.type)(*(it->second), action.data);
+}
+
 }  // namespace Shooter::GameObjects

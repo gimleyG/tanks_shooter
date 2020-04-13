@@ -1,11 +1,12 @@
 #pragma once
 
+#include "actions/registrator.h"
 #include "game_map/map.h"
 #include "game_objects/updatable.h"
 
 namespace Shooter::GameObjects {
 
-class BattleGround : public sf::Drawable {
+class BattleGround : public sf::Drawable, public Actions::Registrator {
  public:
   BattleGround(uint32_t width, uint32_t height);
   ~BattleGround() override;
@@ -13,6 +14,10 @@ class BattleGround : public sf::Drawable {
   // Drawable
  public:
   void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+  // Actions::Registrator
+ public:
+  void registerAction(const Actions::Action&) override;
 
  public:
   void loadMap(const GameMap::Map& map);

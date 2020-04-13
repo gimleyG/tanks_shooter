@@ -3,6 +3,8 @@
 #include "game_map/parser.h"
 #include "game_objects/battleground.h"
 #include "game_objects/object.h"
+#include "game_objects/tank.h"
+#include "game_objects/tank_controller.h"
 #include "menu/item_pointer.h"
 #include "menu/main.h"
 #include "menu/splash_screen.h"
@@ -137,9 +139,17 @@ class Game::Implementation final {
 
     GameObjects::BattleGround battleGround(SCREEN_WIDTH, SCREEN_HEIGHT);
     battleGround.loadMap(map);
+    {
+      auto tank = std::make_unique<GameObjects::Tank>();
+      tank->setState({{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 50}, 0});
+      auto tankController = std::make_unique<GameObjects::TankController>(
+          std::move(tank), battleGround);
+      battleGround.registerGameObject(std::move(tankController));
+    }
 
     auto updateGame = [this, &battleGround]() {
       m_mainWindow.clear(CLEAR_COLOR);
+      battleGround.updateAll();
       m_mainWindow.draw(battleGround);
       m_mainWindow.display();
     };
@@ -184,7 +194,8 @@ void Game::start() {
     while (m_impl->m_state != State::Exiting) {
       m_impl->playLoop();
     }
-  } catch (std::exception) {
+  } catch (const std::exception& e) {
+    std::cout << "[Err] " << e.what() << "\n";
   }
 
   m_impl->finilize();
