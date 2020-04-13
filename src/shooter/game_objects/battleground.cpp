@@ -52,28 +52,43 @@ BattleGround::~BattleGround() = default;
 
 void BattleGround::draw(sf::RenderTarget& target,
                         sf::RenderStates states) const {
-  // draw map
-  for (auto& [id, objectPtr] : m_gameObjects) {
+  for (auto& [id, objectPtr] : m_mapObjects) {
     if (objectPtr->getType() != Object::Type::WALL) {
       continue;
     }
+    target.draw(*objectPtr, states);
+  }
+
+  for (auto& [id, objectPtr] : m_gameObjects) {
     target.draw(*objectPtr, states);
   }
 }
 
 void BattleGround::loadMap(const GameMap::Map& map) {
   for (const auto& wall : map.walls) {
-    registerObject(std::make_unique<Wall>(wall.size, wall.position));
+    auto mapObject = std::make_unique<Wall>(wall.size, wall.position);
+    const auto id = INDEXER.getVacantId();
+    mapObject->setId(id);
+
+    m_mapObjects.insert({id, std::move(mapObject)});
   }
 }
 
-void BattleGround::registerObject(GameObjects::Object::UPtr object) {
-  auto id = INDEXER.getVacantId();
+void BattleGround::registerGameObject(GameObjects::Updatable::UPtr object) {
+  const auto id = INDEXER.getVacantId();
   object->setId(id);
   m_gameObjects.insert({id, std::move(object)});
 }
 
-void BattleGround::unregisterObject(Object::Id id) {
+void BattleGround::updateAll() {
+  float timeDelta = m_clock.restart().asSeconds();
+
+  for (auto& [id, objectPtr] : m_gameObjects) {
+    objectPtr->update(timeDelta);
+  }
+}
+
+void BattleGround::unregisterGameObject(Object::Id id) {
   m_gameObjects.erase(id);
   INDEXER.freeId(id);
 }

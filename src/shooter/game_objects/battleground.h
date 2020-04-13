@@ -1,7 +1,7 @@
 #pragma once
 
 #include "game_map/map.h"
-#include "game_objects/object.h"
+#include "game_objects/updatable.h"
 
 namespace Shooter::GameObjects {
 
@@ -16,13 +16,15 @@ class BattleGround : public sf::Drawable {
 
  public:
   void loadMap(const GameMap::Map& map);
-  void registerObject(GameObjects::Object::UPtr object);
+  void registerGameObject(GameObjects::Updatable::UPtr object);
+  void updateAll();
 
  private:
-  void unregisterObject(Object::Id id);
+  void unregisterGameObject(Object::Id id);
 
  private:
-  std::map<Object::Id, GameObjects::Object::UPtr> m_gameObjects;
+  std::map<Object::Id, GameObjects::Object::UPtr> m_mapObjects;
+  std::map<Object::Id, GameObjects::Updatable::UPtr> m_gameObjects;
   sf::Vector2u m_size;
 
   mutable sf::Clock m_clock;
