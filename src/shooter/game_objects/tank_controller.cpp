@@ -97,4 +97,12 @@ void TankController::update(float elapsedTime) {
   }
 }
 
+void TankController::updatePosition(const sf::Vector2f& position) {
+  m_controlledTank->setPosition(position);
+}
+
+void TankController::updateAngle(float angle) {
+  m_controlledTank->setAngle(angle);
+}
+
 }  // namespace Shooter::GameObjects

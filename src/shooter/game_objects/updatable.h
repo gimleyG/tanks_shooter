@@ -12,5 +12,9 @@ class Updatable : public Object {
   ~Updatable() override = default;
 
   virtual void update(float elapsedTime) = 0;
+
+  virtual void updatePosition(const sf::Vector2f& position) = 0;
+
+  virtual void updateAngle(float angle) = 0;
 };
 }  // namespace Shooter::GameObjects

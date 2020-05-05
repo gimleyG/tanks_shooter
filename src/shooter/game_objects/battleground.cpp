@@ -97,12 +97,11 @@ namespace {
 
 using ActionHandlers = std::unordered_map<
     Actions::Action::Type,
-    std::function<void(const GameObjects::Updatable& object,
+    std::function<void(GameObjects::Updatable& object,
                        const Actions::ActionData& actionData)>>;
 const ActionHandlers HANDLERS = {
     {Actions::Action::Type::MOVE,
-     [](const GameObjects::Updatable& object,
-        const Actions::ActionData& actionData) {
+     [](GameObjects::Updatable& object, const Actions::ActionData& actionData) {
        if (GameObjects::Object::Type::BULLET == object.getType()) {
          std::cout << "[Info] A bullet moves" << std::endl;
          // 1. If the bullet gets out of the screen - it removes
@@ -113,6 +112,8 @@ const ActionHandlers HANDLERS = {
                    << "id " << object.getId().value() << "; position "
                    << actionData.position.x << ":" << actionData.position.y
                    << "; angle " << actionData.angle << std::endl;
+         object.updatePosition(actionData.position);
+         object.updateAngle(actionData.angle);
          // 1. Check that the object remain inside the view
          // 2. Check that the object is not inside the map objects
          // 3. Doesn't intersect with other players

@@ -141,7 +141,7 @@ class Game::Implementation final {
     battleGround.loadMap(map);
     {
       auto tank = std::make_unique<GameObjects::Tank>();
-      tank->setState({{SCREEN_WIDTH / 2, SCREEN_HEIGHT - 50}, 0});
+      tank->setPosition({SCREEN_WIDTH / 2, SCREEN_HEIGHT - 50});
       auto tankController = std::make_unique<GameObjects::TankController>(
           std::move(tank), battleGround);
       battleGround.registerGameObject(std::move(tankController));
@@ -157,21 +157,21 @@ class Game::Implementation final {
     updateGame();
 
     sf::Event event;
-    BEGIN_EVENT_LOOP_SECTION(m_mainWindow, event)
+    while (true) {
+      m_mainWindow.pollEvent(event);
 
-    if (event.type == sf::Event::KeyPressed &&
-        event.key.code == sf::Keyboard::Escape) {
-      m_state = State::ShowingMenu;
-      showMenu();
-      return;
-    } else if (event.type == sf::Event::Closed) {
-      m_state = State::Exiting;
-      return;
+      if (event.type == sf::Event::KeyPressed &&
+          event.key.code == sf::Keyboard::Escape) {
+        m_state = State::ShowingMenu;
+        showMenu();
+        return;
+      } else if (event.type == sf::Event::Closed) {
+        m_state = State::Exiting;
+        return;
+      }
+
+      updateGame();
     }
-
-    updateGame();
-
-    END_EVENT_LOOP_SECTION
   }
 
  public:

@@ -21,7 +21,9 @@ class Tank : public sf::Drawable {
 
   const State& getState() const;
 
-  void setState(const State&);
+  void setPosition(const sf::Vector2f& position);
+
+  void setAngle(float angle);
 
  private:
   State m_state;

@@ -27,6 +27,10 @@ class TankController : public Updatable {
 
   void update(float elapsedTime) override;
 
+  void updatePosition(const sf::Vector2f& position) override;
+
+  void updateAngle(float angle) override;
+
  private:
   std::unique_ptr<Tank> m_controlledTank;
   Actions::Registrator& m_actionRegistrator;

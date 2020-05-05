@@ -4,11 +4,14 @@ namespace Shooter::GameObjects {
 
 Tank::Tank() : m_state{} {
   m_texture = std::make_unique<sf::Texture>();
-  if (!m_texture->loadFromFile("resources/images/player_tank.png")) {
+  if (!m_texture->loadFromFile("resources/images/tank.png")) {
     throw std::exception("Unable to load main menu texture.");
   }
 
   m_sprite = std::make_unique<sf::Sprite>(*m_texture);
+
+  m_sprite->setOrigin(m_sprite->getLocalBounds().width / 2.f,
+                      m_sprite->getLocalBounds().height / 2.f);
 }
 
 void Tank::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -17,10 +20,14 @@ void Tank::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 const Tank::State& Tank::getState() const { return m_state; }
 
-void Tank::setState(const State& newState) {
-  m_state = newState;
-  m_sprite->setPosition(m_state.position);
-  m_sprite->setRotation(m_state.angle);
+void Tank::setPosition(const sf::Vector2f& position) {
+  m_state.position = position;
+  m_sprite->setPosition(position);
+}
+
+void Tank::setAngle(float angle) {
+  m_state.angle = angle;
+  m_sprite->setRotation(angle);
 }
 
 }  // namespace Shooter::GameObjects
