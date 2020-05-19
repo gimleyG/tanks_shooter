@@ -16,7 +16,8 @@ class Wall : public Object {
   Object::Type getType() const override;
 
  private:
-  sf::RectangleShape m_shape;
+  std::unique_ptr<sf::Texture> m_texture;
+  std::unique_ptr<sf::Sprite> m_sprite;
 };
 
 }  // namespace Shooter::GameObjects

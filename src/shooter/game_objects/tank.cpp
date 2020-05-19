@@ -7,6 +7,7 @@ Tank::Tank() : m_state{} {
   if (!m_texture->loadFromFile("resources/images/tank.png")) {
     throw std::exception("Unable to load main menu texture.");
   }
+  m_texture->setSmooth(true);
 
   m_sprite = std::make_unique<sf::Sprite>(*m_texture);
 

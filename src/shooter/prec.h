@@ -1,5 +1,7 @@
 #pragma once
 
+#include <math.h>
+
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
