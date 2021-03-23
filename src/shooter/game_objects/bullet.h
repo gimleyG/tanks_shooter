@@ -3,21 +3,19 @@
 #include "actions/registrator.h"
 #include "game_objects/updatable.h"
 
-namespace Shooter {
+namespace Shooter::GameObjects {
 
-namespace Actions {
-class Registrator;
-}  // namespace Actions
-
-namespace GameObjects {
-
-class Tank;
-
-class TankController final : public Updatable {
+class Bullet final : public Updatable {
  public:
-  explicit TankController(std::unique_ptr<Tank> tank,
-                          Actions::Registrator& registrator);
-  ~TankController() override;
+  struct State {
+    sf::Vector2f position;
+    float angle;
+  };
+
+ public:
+  Bullet(const sf::Vector2f& position, float angle,
+         Actions::Registrator& registrator);
+  ~Bullet() override;
 
   // Updatable
  public:
@@ -32,9 +30,11 @@ class TankController final : public Updatable {
   void updateAngle(float angle) override;
 
  private:
-  std::unique_ptr<Tank> m_controlledTank;
+  std::unique_ptr<sf::Texture> m_texture;
+  std::unique_ptr<sf::Sprite> m_sprite;
+
   Actions::Registrator& m_actionRegistrator;
+  State m_state;
 };
 
-}  // namespace GameObjects
-}  // namespace Shooter
+}  // namespace Shooter::GameObjects

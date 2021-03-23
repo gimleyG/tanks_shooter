@@ -5,7 +5,7 @@ namespace Shooter::GameObjects {
 Tank::Tank() : m_state{} {
   m_texture = std::make_unique<sf::Texture>();
   if (!m_texture->loadFromFile("resources/images/tank.png")) {
-    throw std::exception("Unable to load main menu texture.");
+    throw std::exception("Unable to load a tank texture.");
   }
   m_texture->setSmooth(true);
 

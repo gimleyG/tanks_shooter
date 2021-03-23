@@ -18,6 +18,8 @@ set(SOURCES
 
     game_objects/object.h
     game_objects/updatable.h
+    game_objects/bullet.h
+    game_objects/bullet.cpp
     game_objects/tank.h
     game_objects/tank.cpp
     game_objects/tank_controller.h
