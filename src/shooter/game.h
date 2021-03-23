@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace Shooter {
 
 class Game final {

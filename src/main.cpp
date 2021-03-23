@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "shooter/game.h"
 
 int main() {

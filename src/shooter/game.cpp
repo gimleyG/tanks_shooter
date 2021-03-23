@@ -1,3 +1,5 @@
+#include "prec.h"
+
 #include "game.h"
 
 #include "game_map/parser.h"

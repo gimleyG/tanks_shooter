@@ -119,7 +119,7 @@ void BattleGround::registerAction(const Actions::Action& action) {
     case Actions::Action::Type::MOVE: {
       GameObjects::Updatable& object = *(it->second);
       if (GameObjects::Object::Type::BULLET == object.getType()) {
-        // 1. If the bullet gets out of the screen - it removes
+        // 1. If the bullet gets out of the screen - it is removed
         const auto newPosition = action.data.position;
         if ((newPosition.x <= 0) || (newPosition.x >= m_size.x) ||
             (newPosition.y <= 0) || (newPosition.y >= m_size.y)) {
@@ -129,8 +129,8 @@ void BattleGround::registerAction(const Actions::Action& action) {
           unregisterGameObject(id);
           break;
         }
-        // 2. If the bullet hits a map object - it removes
-        // 3. If the bullet hits a player - it removes, the player dies
+        // 2. If the bullet hits a map object - it is removed
+        // 3. If the bullet hits a player - it is removed, the player dies
 
         std::cout << "[Info] A bullet moves: "
                   << "id " << object.getId().value() << "; position "
