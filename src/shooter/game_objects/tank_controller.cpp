@@ -33,7 +33,7 @@ void TankController::update(float elapsedTime) {
     action.type = Action::Type::MOVE;
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
-    m_actionRegistrator.registerAction(action);
+    m_actionRegistrator.registerAction(std::move(action));
     return;
   }
 
@@ -49,7 +49,7 @@ void TankController::update(float elapsedTime) {
     action.type = Action::Type::MOVE;
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
-    m_actionRegistrator.registerAction(action);
+    m_actionRegistrator.registerAction(std::move(action));
     return;
   }
 
@@ -65,7 +65,7 @@ void TankController::update(float elapsedTime) {
     action.type = Action::Type::MOVE;
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
-    m_actionRegistrator.registerAction(action);
+    m_actionRegistrator.registerAction(std::move(action));
     return;
   }
 
@@ -81,7 +81,7 @@ void TankController::update(float elapsedTime) {
     action.type = Action::Type::MOVE;
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
-    m_actionRegistrator.registerAction(action);
+    m_actionRegistrator.registerAction(std::move(action));
     return;
   }
 
@@ -93,7 +93,7 @@ void TankController::update(float elapsedTime) {
     const auto& state = m_controlledTank->getState();
     action.data = {state.position, state.angle};
 
-    m_actionRegistrator.registerAction(action);
+    m_actionRegistrator.registerAction(std::move(action));
   }
 }
 

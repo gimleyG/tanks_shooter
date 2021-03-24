@@ -44,7 +44,7 @@ void Bullet::update(float elapsedTime) {
   action.data = {
       m_state.position + sf::Vector2f{sin * moveAmount, -cos * moveAmount},
       m_state.angle};
-  m_actionRegistrator.registerAction(action);
+  m_actionRegistrator.registerAction(std::move(action));
 }
 
 void Bullet::updatePosition(const sf::Vector2f& position) {

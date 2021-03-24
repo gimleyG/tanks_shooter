@@ -4,6 +4,8 @@
 #include "game_map/map.h"
 #include "game_objects/updatable.h"
 
+#include <deque>
+
 namespace Shooter::GameObjects {
 
 class BattleGround : public sf::Drawable, public Actions::Registrator {
@@ -17,7 +19,7 @@ class BattleGround : public sf::Drawable, public Actions::Registrator {
 
   // Actions::Registrator
  public:
-  void registerAction(const Actions::Action&) override;
+  void registerAction(Actions::Action&&) override;
 
  public:
   void loadMap(const GameMap::Map& map);
@@ -26,11 +28,14 @@ class BattleGround : public sf::Drawable, public Actions::Registrator {
 
  private:
   void unregisterGameObject(Object::Id id);
+   void performAction(Actions::Action&&);
 
  private:
   std::map<Object::Id, GameObjects::Object::UPtr> m_mapObjects;
   std::map<Object::Id, GameObjects::Updatable::UPtr> m_gameObjects;
   sf::Vector2u m_size;
+
+  std::deque<Actions::Action> m_actions;
 
   mutable sf::Clock m_clock;
 };

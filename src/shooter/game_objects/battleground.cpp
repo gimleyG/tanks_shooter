@@ -83,11 +83,15 @@ void BattleGround::registerGameObject(GameObjects::Updatable::UPtr object) {
 
 void BattleGround::updateAll() {
   float timeDelta = m_clock.restart().asSeconds();
-
-  // TODO: Fix update algorithm to support object deleting
+    
   for (auto& [id, objectPtr] : m_gameObjects) {
     objectPtr->update(timeDelta);
   }
+
+  for (auto &&action : m_actions) {
+    performAction(std::move(action));
+  }
+  m_actions.clear();
 }
 
 void BattleGround::unregisterGameObject(Object::Id id) {
@@ -95,7 +99,7 @@ void BattleGround::unregisterGameObject(Object::Id id) {
   INDEXER.freeId(id);
 }
 
-void BattleGround::registerAction(const Actions::Action& action) {
+void BattleGround::registerAction(Actions::Action &&action) {
   using ActionType = Actions::Action::Type;
 
   if (action.type != ActionType::MOVE && action.type != ActionType::SHOOT) {
@@ -105,6 +109,10 @@ void BattleGround::registerAction(const Actions::Action& action) {
     return;
   }
 
+  m_actions.push_back(std::move(action));
+}
+
+void BattleGround::performAction(Actions::Action&& action) {
   const auto objId = action.senderId;
 
   auto it = m_gameObjects.find(objId);
