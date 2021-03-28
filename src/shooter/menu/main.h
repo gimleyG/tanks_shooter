@@ -13,7 +13,6 @@ namespace Shooter::Menu {
 
 class Main final : public sf::Drawable {
  public:
- public:
   Main();
   ~Main() override;
 

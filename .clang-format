@@ -1,0 +1,8 @@
+BasedOnStyle: Google
+ColumnLimit:     100
+IncludeCategories:
+  - Regex:           '^"prec.h"'
+    Priority:        -1
+  - Regex:           '^<.*'
+    Priority:        1
+AllowShortEnumsOnASingleLine: false 

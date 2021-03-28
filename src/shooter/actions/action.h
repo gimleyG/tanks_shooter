@@ -5,7 +5,11 @@
 namespace Shooter::Actions {
 
 struct Action {
-  enum class Type { SHOOT = 0, MOVE };
+  enum class Type
+  {
+    SHOOT = 0,
+    MOVE
+  };
   using SenderId = std::uint16_t;
 
   Type type;

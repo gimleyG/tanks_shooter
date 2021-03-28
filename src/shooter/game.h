@@ -6,7 +6,8 @@ namespace Shooter {
 
 class Game final {
  public:
-  enum class State {
+  enum class State
+  {
     Uninitialized = 0,
     ShowingSplash,
     ShowingMenu,

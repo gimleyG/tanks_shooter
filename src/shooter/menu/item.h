@@ -2,7 +2,12 @@
 
 namespace Shooter::Menu {
 
-enum class Action { Nothing = 0, Exit, Play };
+enum class Action
+{
+  Nothing = 0,
+  Exit,
+  Play
+};
 
 struct Item {
   sf::Rect<int> rect;

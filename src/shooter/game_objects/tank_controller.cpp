@@ -5,14 +5,12 @@
 
 namespace Shooter::GameObjects {
 
-TankController::TankController(Tank::UPtr tank,
-                               Actions::Registrator& registrator)
+TankController::TankController(Tank::UPtr tank, Actions::Registrator& registrator)
     : m_controlledTank(std::move(tank)), m_actionRegistrator(registrator) {}
 
 TankController::~TankController() = default;
 
-void TankController::draw(sf::RenderTarget& target,
-                          sf::RenderStates states) const {
+void TankController::draw(sf::RenderTarget& target, sf::RenderStates states) const {
   m_controlledTank->draw(target, states);
 }
 
@@ -101,8 +99,6 @@ void TankController::updatePosition(const sf::Vector2f& position) {
   m_controlledTank->setPosition(position);
 }
 
-void TankController::updateAngle(float angle) {
-  m_controlledTank->setAngle(angle);
-}
+void TankController::updateAngle(float angle) { m_controlledTank->setAngle(angle); }
 
 }  // namespace Shooter::GameObjects

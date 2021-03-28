@@ -15,8 +15,7 @@ class ItemPointer final : public sf::Drawable {
 
   // Drawable
  public:
-  virtual void draw(sf::RenderTarget& target,
-                    sf::RenderStates states) const override;
+  virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
  public:
   void setUp(ItemListIter beg, ItemListIter end);

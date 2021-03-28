@@ -15,8 +15,7 @@ ItemPointer::~ItemPointer() = default;
 
 const ItemListIter& ItemPointer::getCurrent() const { return m_current; }
 
-void ItemPointer::draw(sf::RenderTarget& target,
-                       sf::RenderStates states) const {
+void ItemPointer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
   target.draw(*m_sprite, states);
 }
 

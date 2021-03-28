@@ -8,7 +8,12 @@ class Object : public sf::Drawable {
   using Id = uint16_t;
 
  public:
-  enum class Type { TANK = 0, BULLET, WALL };
+  enum class Type
+  {
+    TANK = 0,
+    BULLET,
+    WALL
+  };
 
  public:
   ~Object() override = default;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <math.h>
-
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -13,12 +11,14 @@
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <deque>
 #include <filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <list>
 #include <map>
+#include <math.h>
 #include <memory>
 #include <optional>
 #include <sstream>

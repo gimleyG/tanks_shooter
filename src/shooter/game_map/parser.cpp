@@ -28,13 +28,10 @@ constexpr auto MAX_SIZE_OF_WALL_DESCRIPTION = 5;
 
 void normalize(std::string& str) {
   std::replace_if(
-      str.begin(), str.end(), [](const char& ch) { return std::isspace(ch); },
-      ' ');
+      str.begin(), str.end(), [](const char& ch) { return std::isspace(ch); }, ' ');
 
   str.erase(std::unique(str.begin(), str.end(),
-                        [](const char one, const char two) {
-                          return one == ' ' && two == ' ';
-                        }),
+                        [](const char one, const char two) { return one == ' ' && two == ' '; }),
             str.end());
 }
 
@@ -46,11 +43,11 @@ Parser& Parser::operator>>(Map& map) {
     std::string_view lineView = line;
 
     const auto start = lineView.find_first_not_of(SPACE_CHARS);
+
     if (start == std::string::npos) {
       continue;
     }
-    lineView =
-        lineView.substr(start, lineView.find_last_not_of(SPACE_CHARS) + 1);
+    lineView = lineView.substr(start, lineView.find_last_not_of(SPACE_CHARS) + 1);
 
     if (lineView.compare(0, WALL_STR_SIZE, WALL_STR) != 0) {
       continue;
@@ -61,8 +58,8 @@ Parser& Parser::operator>>(Map& map) {
 
     std::vector<std::string> tokens;
     std::istringstream iss(line);
-    std::copy(std::istream_iterator<std::string>(iss),
-              std::istream_iterator<std::string>(), std::back_inserter(tokens));
+    std::copy(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>(),
+              std::back_inserter(tokens));
 
     if (tokens.size() < MAX_SIZE_OF_WALL_DESCRIPTION) {
       continue;

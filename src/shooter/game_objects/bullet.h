@@ -13,8 +13,7 @@ class Bullet final : public Updatable {
   };
 
  public:
-  Bullet(const sf::Vector2f& position, float angle,
-         Actions::Registrator& registrator);
+  Bullet(const sf::Vector2f& position, float angle, Actions::Registrator& registrator);
   ~Bullet() override;
 
   // Updatable

@@ -46,13 +46,11 @@ class Indexer final {
 
 }  // namespace
 
-BattleGround::BattleGround(uint32_t width, uint32_t height)
-    : m_size{width, height} {}
+BattleGround::BattleGround(uint32_t width, uint32_t height) : m_size{width, height} {}
 
 BattleGround::~BattleGround() = default;
 
-void BattleGround::draw(sf::RenderTarget& target,
-                        sf::RenderStates states) const {
+void BattleGround::draw(sf::RenderTarget& target, sf::RenderStates states) const {
   for (auto& [id, objectPtr] : m_mapObjects) {
     if (objectPtr->getType() != Object::Type::WALL) {
       continue;
@@ -83,15 +81,15 @@ void BattleGround::registerGameObject(GameObjects::Updatable::UPtr object) {
 
 void BattleGround::updateAll() {
   float timeDelta = m_clock.restart().asSeconds();
-    
+
   for (auto& [id, objectPtr] : m_gameObjects) {
     objectPtr->update(timeDelta);
   }
 
-  for (auto &&action : m_actions) {
-    performAction(std::move(action));
+  while (!m_actions.empty()) {
+    performAction(std::move(m_actions.front()));
+    m_actions.pop_front();
   }
-  m_actions.clear();
 }
 
 void BattleGround::unregisterGameObject(Object::Id id) {
@@ -99,13 +97,12 @@ void BattleGround::unregisterGameObject(Object::Id id) {
   INDEXER.freeId(id);
 }
 
-void BattleGround::registerAction(Actions::Action &&action) {
+void BattleGround::registerAction(Actions::Action&& action) {
   using ActionType = Actions::Action::Type;
 
   if (action.type != ActionType::MOVE && action.type != ActionType::SHOOT) {
     // TODO: Print warn message to log
-    std::cout << "[Warn] Unexpected action type. The sender is "
-              << action.senderId << "\n";
+    std::cout << "[Warn] Unexpected action type. The sender is " << action.senderId << "\n";
     return;
   }
 
@@ -129,11 +126,11 @@ void BattleGround::performAction(Actions::Action&& action) {
       if (GameObjects::Object::Type::BULLET == object.getType()) {
         // 1. If the bullet gets out of the screen - it is removed
         const auto newPosition = action.data.position;
-        if ((newPosition.x <= 0) || (newPosition.x >= m_size.x) ||
-            (newPosition.y <= 0) || (newPosition.y >= m_size.y)) {
+        if ((newPosition.x <= 0) || (newPosition.x >= m_size.x) || (newPosition.y <= 0) ||
+            (newPosition.y >= m_size.y)) {
           const auto id = object.getId().value();
-          std::cout << "[Debug] Remove bullet with id " << id
-                    << " as it got out of bounds." << std::endl;
+          std::cout << "[Debug] Remove bullet with id " << id << " as it got out of bounds."
+                    << std::endl;
           unregisterGameObject(id);
           break;
         }
@@ -141,9 +138,8 @@ void BattleGround::performAction(Actions::Action&& action) {
         // 3. If the bullet hits a player - it is removed, the player dies
 
         std::cout << "[Info] A bullet moves: "
-                  << "id " << object.getId().value() << "; position "
-                  << action.data.position.x << ":" << action.data.position.y
-                  << "; angle " << action.data.angle << std::endl;
+                  << "id " << object.getId().value() << "; position " << action.data.position.x
+                  << ":" << action.data.position.y << "; angle " << action.data.angle << std::endl;
         object.updatePosition(action.data.position);
         object.updateAngle(action.data.angle);
       } else {
@@ -152,9 +148,8 @@ void BattleGround::performAction(Actions::Action&& action) {
         // 3. Doesn't intersect with other players
 
         std::cout << "[Info] An object moves: "
-                  << "id " << object.getId().value() << "; position "
-                  << action.data.position.x << ":" << action.data.position.y
-                  << "; angle " << action.data.angle << std::endl;
+                  << "id " << object.getId().value() << "; position " << action.data.position.x
+                  << ":" << action.data.position.y << "; angle " << action.data.angle << std::endl;
         object.updatePosition(action.data.position);
         object.updateAngle(action.data.angle);
       }
@@ -162,12 +157,10 @@ void BattleGround::performAction(Actions::Action&& action) {
     case Actions::Action::Type::SHOOT: {
       // Create a bullet
       std::cout << "[Info] A bullet created"
-                << "position " << action.data.position.x << ":"
-                << action.data.position.y << "; angle " << action.data.angle
-                << "\n";
+                << "position " << action.data.position.x << ":" << action.data.position.y
+                << "; angle " << action.data.angle << "\n";
 
-      registerGameObject(std::make_unique<Bullet>(action.data.position,
-                                                  action.data.angle, *this));
+      registerGameObject(std::make_unique<Bullet>(action.data.position, action.data.angle, *this));
     } break;
   }
 }

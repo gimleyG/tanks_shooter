@@ -15,8 +15,7 @@ class Tank;
 
 class TankController final : public Updatable {
  public:
-  explicit TankController(std::unique_ptr<Tank> tank,
-                          Actions::Registrator& registrator);
+  explicit TankController(std::unique_ptr<Tank> tank, Actions::Registrator& registrator);
   ~TankController() override;
 
   // Updatable
