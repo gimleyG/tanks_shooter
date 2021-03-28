@@ -2,7 +2,7 @@
 
 namespace Shooter::GameObjects {
 
-class Tank : public sf::Drawable {
+class Tank final : public sf::Drawable {
  public:
   using UPtr = std::unique_ptr<Tank>;
 

@@ -1,3 +1,5 @@
+#include "prec.h"
+
 #include "game.h"
 
 #include "game_map/parser.h"
@@ -10,7 +12,6 @@
 #include "menu/splash_screen.h"
 
 namespace Shooter {
-
 namespace {
 constexpr int SCREEN_WIDTH = 512;
 constexpr int SCREEN_HEIGHT = 650;
@@ -40,9 +41,8 @@ class Game::Implementation final {
   Implementation& operator=(Implementation&&) = delete;
 
   void init() {
-    m_mainWindow.create(
-        sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, DEFAULT_BITS_PER_PIXEL),
-        "The Shooter");
+    m_mainWindow.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, DEFAULT_BITS_PER_PIXEL),
+                        "The Shooter");
     m_mainWindow.setFramerateLimit(FPS);
 
     m_state = State::ShowingSplash;
@@ -88,8 +88,7 @@ class Game::Implementation final {
   void showMenu() {
     Menu::Main mainMenu;
     Menu::ItemPointer menuItemPointer;
-    menuItemPointer.setUp(mainMenu.getItems().begin(),
-                          mainMenu.getItems().end());
+    menuItemPointer.setUp(mainMenu.getItems().begin(), mainMenu.getItems().end());
 
     auto updateMenu = [this, &mainMenu, &menuItemPointer]() {
       m_mainWindow.draw(mainMenu);
@@ -142,8 +141,8 @@ class Game::Implementation final {
     {
       auto tank = std::make_unique<GameObjects::Tank>();
       tank->setPosition({SCREEN_WIDTH / 2, SCREEN_HEIGHT - 50});
-      auto tankController = std::make_unique<GameObjects::TankController>(
-          std::move(tank), battleGround);
+      auto tankController =
+          std::make_unique<GameObjects::TankController>(std::move(tank), battleGround);
       battleGround.registerGameObject(std::move(tankController));
     }
 
@@ -160,8 +159,7 @@ class Game::Implementation final {
     while (true) {
       m_mainWindow.pollEvent(event);
 
-      if (event.type == sf::Event::KeyPressed &&
-          event.key.code == sf::Keyboard::Escape) {
+      if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
         m_state = State::ShowingMenu;
         showMenu();
         return;

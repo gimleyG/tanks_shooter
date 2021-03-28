@@ -14,8 +14,7 @@ SplashScreen::SplashScreen() {
 
 SplashScreen::~SplashScreen() = default;
 
-void SplashScreen::draw(sf::RenderTarget& target,
-                        sf::RenderStates states) const {
+void SplashScreen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
   target.draw(*m_sprite, states);
 }
 
