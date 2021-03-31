@@ -33,6 +33,7 @@ class TankController final : public Updatable {
  private:
   std::unique_ptr<Tank> m_controlledTank;
   Actions::Registrator& m_actionRegistrator;
+  float m_towerAngle;
 };
 
 }  // namespace GameObjects

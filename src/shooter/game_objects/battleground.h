@@ -29,6 +29,11 @@ class BattleGround : public sf::Drawable, public Actions::Registrator {
   void performAction(Actions::Action&&);
 
  private:
+  void handleMove(GameObjects::Updatable& object, Actions::Action&& action);
+  void handleTurn(GameObjects::Updatable& object, Actions::Action&& action);
+  void handleShoot(Actions::Action&& action);
+
+ private:
   std::map<Object::Id, GameObjects::Object::UPtr> m_mapObjects;
   std::map<Object::Id, GameObjects::Updatable::UPtr> m_gameObjects;
   sf::Vector2u m_size;

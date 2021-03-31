@@ -8,7 +8,7 @@ namespace Shooter::GameObjects {
 namespace {
 
 using Capacity = Object::Id;
-const Capacity MAX_INDEXER_CAPACITY = 1024;
+constexpr Capacity MAX_INDEXER_CAPACITY = 1024;
 
 class Indexer final {
  public:
@@ -100,13 +100,16 @@ void BattleGround::unregisterGameObject(Object::Id id) {
 void BattleGround::registerAction(Actions::Action&& action) {
   using ActionType = Actions::Action::Type;
 
-  if (action.type != ActionType::MOVE && action.type != ActionType::SHOOT) {
-    // TODO: Print warn message to log
-    std::cout << "[Warn] Unexpected action type. The sender is " << action.senderId << "\n";
-    return;
+  switch (action.type) {
+    case ActionType::MOVE:
+    case ActionType::SHOOT:
+    case ActionType::TURN:
+      m_actions.push_back(std::move(action));
+      break;
+    default:
+      // TODO: Print warn message to log
+      std::cout << "[Warn] Unexpected action type. The sender is " << action.senderId << "\n";
   }
-
-  m_actions.push_back(std::move(action));
 }
 
 void BattleGround::performAction(Actions::Action&& action) {
@@ -122,47 +125,112 @@ void BattleGround::performAction(Actions::Action&& action) {
 
   switch (action.type) {
     case Actions::Action::Type::MOVE: {
-      GameObjects::Updatable& object = *(it->second);
-      if (GameObjects::Object::Type::BULLET == object.getType()) {
-        // 1. If the bullet gets out of the screen - it is removed
-        const auto newPosition = action.data.position;
-        if ((newPosition.x <= 0) || (newPosition.x >= m_size.x) || (newPosition.y <= 0) ||
-            (newPosition.y >= m_size.y)) {
-          const auto id = object.getId().value();
-          std::cout << "[Debug] Remove bullet with id " << id << " as it got out of bounds."
-                    << std::endl;
-          unregisterGameObject(id);
-          break;
-        }
-        // 2. If the bullet hits a map object - it is removed
-        // 3. If the bullet hits a player - it is removed, the player dies
-
-        std::cout << "[Info] A bullet moves: "
-                  << "id " << object.getId().value() << "; position " << action.data.position.x
-                  << ":" << action.data.position.y << "; angle " << action.data.angle << std::endl;
-        object.updatePosition(action.data.position);
-        object.updateAngle(action.data.angle);
-      } else {
-        // 1. Check that the object remain inside the view
-        // 2. Check that the object is not inside the map objects
-        // 3. Doesn't intersect with other players
-
-        std::cout << "[Info] An object moves: "
-                  << "id " << object.getId().value() << "; position " << action.data.position.x
-                  << ":" << action.data.position.y << "; angle " << action.data.angle << std::endl;
-        object.updatePosition(action.data.position);
-        object.updateAngle(action.data.angle);
-      }
+      handleMove(*(it->second), std::move(action));
     } break;
-    case Actions::Action::Type::SHOOT: {
-      // Create a bullet
-      std::cout << "[Info] A bullet created"
-                << "position " << action.data.position.x << ":" << action.data.position.y
-                << "; angle " << action.data.angle << "\n";
-
-      registerGameObject(std::make_unique<Bullet>(action.data.position, action.data.angle, *this));
+    case Actions::Action::Type::TURN: {
+      handleTurn(*(it->second), std::move(action));
     } break;
+    case Actions::Action::Type::SHOOT:
+      handleShoot(std::move(action));
+      break;
   }
+}
+
+void BattleGround::handleMove(GameObjects::Updatable& object, Actions::Action&& action) {
+  if (GameObjects::Object::Type::BULLET == object.getType()) {
+    // 1. If the bullet gets out of the screen - it is removed
+    const auto newPosition = action.data.position;
+    if (newPosition.x <= 0 || newPosition.x >= m_size.x || newPosition.y <= 0 ||
+        newPosition.y >= m_size.y) {
+      const auto id = object.getId().value();
+      std::cout << "[Debug] Remove bullet with id " << id << " as it got out of bounds."
+                << std::endl;
+      unregisterGameObject(id);
+      return;
+    }
+
+    // 2. If the bullet hits a map object - it is removed
+    for (auto& [id, objectPtr] : m_mapObjects) {
+      if (objectPtr->getType() != Object::Type::WALL) {
+        continue;
+      }
+      const auto& wallState = objectPtr->getState();
+      if (newPosition.x > wallState.position.x &&
+          newPosition.x < wallState.position.x + wallState.size.x &&
+          newPosition.y > wallState.position.y &&
+          newPosition.y < wallState.position.y + wallState.size.y) {
+        const auto id = object.getId().value();
+        std::cout << "[Debug] Remove bullet with id " << id << " as it hit a wall." << std::endl;
+        unregisterGameObject(id);
+        return;
+      }
+    }
+
+    // 3. If the bullet hits a player - it is removed, the player dies
+    {
+      // TODO: implement
+    }
+
+    std::cout << "[Info] A bullet moves: "
+              << "id " << object.getId().value() << "; position " << action.data.position.x << ":"
+              << action.data.position.y << "; angle " << action.data.angle << std::endl;
+    object.updatePosition(action.data.position);
+    return;
+  }
+
+  const auto newPosition = action.data.position;
+  // 1. Check that the object remain inside the view
+  if (newPosition.x <= 0 || newPosition.x >= m_size.x || newPosition.y <= 0 ||
+      newPosition.y >= m_size.y) {
+    const auto id = object.getId().value();
+    std::cout << "[Debug] Prevent of object " << id << " getting out of bounds." << std::endl;
+    return;
+  }
+
+  // 2. Check that the object is not inside the map objects
+  for (auto& [id, objectPtr] : m_mapObjects) {
+    if (objectPtr->getType() != Object::Type::WALL) {
+      continue;
+    }
+    const auto& wallState = objectPtr->getState();
+    if (newPosition.x > wallState.position.x &&
+        newPosition.x < wallState.position.x + wallState.size.x &&
+        newPosition.y > wallState.position.y &&
+        newPosition.y < wallState.position.y + wallState.size.y) {
+      const auto id = object.getId().value();
+      std::cout << "[Debug] Prevent of object " << id << " moving into a wall." << std::endl;
+      return;
+    }
+  }
+
+  // 3. Doesn't intersect with other players
+  {
+    // TODO: Implement
+  }
+
+  std::cout << "[Info] An object moves: "
+            << "id " << object.getId().value() << "; position " << action.data.position.x << ":"
+            << action.data.position.y << "; angle " << action.data.angle << std::endl;
+  object.updatePosition(action.data.position);
+}
+
+void BattleGround::handleTurn(GameObjects::Updatable& object, Actions::Action&& action) {
+  using ObjType = GameObjects::Object::Type;
+  switch (object.getType()) {
+    case ObjType::BULLET:
+    case ObjType::TANK:
+      object.updateAngle(action.data.angle);
+      break;
+    default:
+      break;
+  }
+}
+
+void BattleGround::handleShoot(Actions::Action&& action) {
+  std::cout << "[Info] A bullet created"
+            << "position " << action.data.position.x << ":" << action.data.position.y << "; angle "
+            << action.data.angle << "\n";
+  registerGameObject(std::make_unique<Bullet>(action.data.position, action.data.angle, *this));
 }
 
 }  // namespace Shooter::GameObjects

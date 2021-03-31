@@ -3,6 +3,7 @@
 namespace Shooter::GameObjects {
 
 Wall::Wall(const sf::Vector2f& size, const sf::Vector2f& position) {
+  m_state = {position, size, 0};
   m_texture = std::make_unique<sf::Texture>();
   if (!m_texture->loadFromFile("resources/images/wall.png")) {
     throw std::exception("Unable to load wall texture.");

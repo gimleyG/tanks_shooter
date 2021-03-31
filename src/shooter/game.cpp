@@ -140,9 +140,9 @@ class Game::Implementation final {
     battleGround.loadMap(map);
     {
       auto tank = std::make_unique<GameObjects::Tank>();
-      tank->setPosition({SCREEN_WIDTH / 2, SCREEN_HEIGHT - 50});
       auto tankController =
           std::make_unique<GameObjects::TankController>(std::move(tank), battleGround);
+      tankController->updatePosition({SCREEN_WIDTH / 2, SCREEN_HEIGHT - 50});
       battleGround.registerGameObject(std::move(tankController));
     }
 

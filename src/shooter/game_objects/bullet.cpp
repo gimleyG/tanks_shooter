@@ -7,17 +7,18 @@ const uint16_t VELOCITY = 400;
 }
 
 Bullet::Bullet(const sf::Vector2f &position, float angle, Actions::Registrator &registrator)
-    : m_actionRegistrator(registrator), m_state{position, angle} {
+    : m_actionRegistrator(registrator) {
   m_texture = std::make_unique<sf::Texture>();
   if (!m_texture->loadFromFile("resources/images/bullet.png")) {
     throw std::exception("Unable to load a bullet texture.");
   }
   m_texture->setSmooth(true);
   m_sprite = std::make_unique<sf::Sprite>(*m_texture);
-
   m_sprite->setPosition(position);
-  m_sprite->setOrigin(m_sprite->getLocalBounds().width / 2.f,
-                      m_sprite->getLocalBounds().height / 2.f);
+  auto bounds = m_sprite->getLocalBounds();
+  m_sprite->setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+  m_state = {position, {bounds.width, bounds.height}, angle};
 }
 
 Bullet::~Bullet() = default;

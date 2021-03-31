@@ -8,7 +8,8 @@ struct Action {
   enum class Type
   {
     SHOOT = 0,
-    MOVE
+    MOVE,
+    TURN
   };
   using SenderId = std::uint16_t;
 

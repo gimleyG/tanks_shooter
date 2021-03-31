@@ -6,7 +6,9 @@
 namespace Shooter::GameObjects {
 
 TankController::TankController(Tank::UPtr tank, Actions::Registrator& registrator)
-    : m_controlledTank(std::move(tank)), m_actionRegistrator(registrator) {}
+    : m_controlledTank(std::move(tank)), m_actionRegistrator(registrator), m_towerAngle(0) {
+  m_state.size = m_controlledTank->getSize();
+}
 
 TankController::~TankController() = default;
 
@@ -18,10 +20,12 @@ Object::Type TankController::getType() const { return Type::TANK; }
 
 void TankController::update(float elapsedTime) {
   using Shooter::Actions::Action;
+  static float timePassedSinceLastShot = 0;
+  timePassedSinceLastShot += elapsedTime;
 
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
     Action action;
-    auto state = m_controlledTank->getState();
+    auto state = m_state;
 
     const auto moveAmount = 100.f * elapsedTime;
     const auto sin = std::sin(state.angle * DEG_TO_RAD_COEF);
@@ -32,12 +36,9 @@ void TankController::update(float elapsedTime) {
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
     m_actionRegistrator.registerAction(std::move(action));
-    return;
-  }
-
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
     Action action;
-    auto state = m_controlledTank->getState();
+    auto state = m_state;
 
     const auto moveAmount = -100.f * elapsedTime;
     const auto sin = std::sin(state.angle * DEG_TO_RAD_COEF);
@@ -48,57 +49,79 @@ void TankController::update(float elapsedTime) {
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
     m_actionRegistrator.registerAction(std::move(action));
-    return;
   }
 
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
     Action action;
-    auto state = m_controlledTank->getState();
+    auto state = m_state;
 
     state.angle -= 40.f * elapsedTime;
     if (state.angle < -180) {
       state.angle += 360;
     }
 
-    action.type = Action::Type::MOVE;
+    action.type = Action::Type::TURN;
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
     m_actionRegistrator.registerAction(std::move(action));
-    return;
-  }
-
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
     Action action;
-    auto state = m_controlledTank->getState();
+    auto state = m_state;
 
     state.angle += 40.0f * elapsedTime;
     if (state.angle > 180) {
       state.angle -= 360;
     }
 
-    action.type = Action::Type::MOVE;
+    action.type = Action::Type::TURN;
     action.senderId = this->getId().value();
     action.data = {state.position, state.angle};
     m_actionRegistrator.registerAction(std::move(action));
-    return;
+  }
+
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    m_towerAngle -= 40.0f * elapsedTime;
+    if (m_towerAngle < -180) {
+      m_towerAngle += 360;
+    }
+    m_controlledTank->setTowerAngle(m_towerAngle);
+  } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    m_towerAngle += 40.0f * elapsedTime;
+    if (m_towerAngle > 180) {
+      m_towerAngle -= 360;
+    }
+    m_controlledTank->setTowerAngle(m_towerAngle);
   }
 
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+    if (timePassedSinceLastShot < 0.4f) {
+      return;
+    }
+    timePassedSinceLastShot = 0;
+
     Action action;
     action.type = Action::Type::SHOOT;
     action.senderId = this->getId().value();
 
-    const auto& state = m_controlledTank->getState();
-    action.data = {state.position, state.angle};
-
+    const auto sin = std::sin(m_towerAngle * DEG_TO_RAD_COEF);
+    const auto cos = std::cos(m_towerAngle * DEG_TO_RAD_COEF);
+    auto position = m_state.position;
+    const auto& canonLength = m_controlledTank->getCanonLength();
+    position.x += canonLength * sin;
+    position.y += -cos * canonLength;
+    action.data = {position, m_towerAngle};
     m_actionRegistrator.registerAction(std::move(action));
   }
 }
 
 void TankController::updatePosition(const sf::Vector2f& position) {
+  m_state.position = position;
   m_controlledTank->setPosition(position);
 }
 
-void TankController::updateAngle(float angle) { m_controlledTank->setAngle(angle); }
+void TankController::updateAngle(float angle) {
+  m_state.angle = angle;
+  m_controlledTank->setAngle(angle);
+}
 
 }  // namespace Shooter::GameObjects

@@ -7,12 +7,6 @@ namespace Shooter::GameObjects {
 
 class Bullet final : public Updatable {
  public:
-  struct State {
-    sf::Vector2f position;
-    float angle;
-  };
-
- public:
   Bullet(const sf::Vector2f& position, float angle, Actions::Registrator& registrator);
   ~Bullet() override;
 
@@ -33,7 +27,6 @@ class Bullet final : public Updatable {
   std::unique_ptr<sf::Sprite> m_sprite;
 
   Actions::Registrator& m_actionRegistrator;
-  State m_state;
 };
 
 }  // namespace Shooter::GameObjects
